@@ -7,7 +7,7 @@ namespace Componentous\ArrayQuery;
 use InvalidArgumentException;
 use RuntimeException;
 
-class ArrayQuery
+class ArrayQuery implements ArrayQueryInterface
 {
     protected ArrayDb $db;
 
@@ -68,7 +68,7 @@ class ArrayQuery
         return $this;
     }
 
-    public function where(string $column, callable $criterion)
+    public function where(string $column, callable $criterion): self
     {
         if (!$this->db->hasColumn($column)) {
             throw new InvalidArgumentException("Column '$column' does not exist");
@@ -77,7 +77,7 @@ class ArrayQuery
         return $this;
     }
 
-    public function groupBy(string $column)
+    public function groupBy(string $column): self
     {
         if (!$this->db->hasColumn($column)) {
             throw new InvalidArgumentException("Column '$column' does not exist");
