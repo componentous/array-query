@@ -14,6 +14,7 @@ class ArrayQuery
     protected string $table;
     protected array $tables = [];
     protected array $columns = [];
+    protected array $criteria = [];
 
     public function getTable(): string
     {
@@ -66,6 +67,15 @@ class ArrayQuery
         return $this;
     }
 
+    public function where(string $column, callable $criterion)
+    {
+        if (!$this->db->hasColumn($column)) {
+            throw new InvalidArgumentException("Column '$column' does not exist");
+        }
+        $this->criteria[$column][] = $criterion;
+        return $this;
+    }
+
     public function validateColumns(): void
     {
         foreach ($this->columns as $table => $columns) {
@@ -79,6 +89,20 @@ class ArrayQuery
         }
     }
 
+    public function rowMeetsCriteria(array $row): bool
+    {
+        foreach ($row as $column => $value) {
+            if (isset($this->criteria[$column])) {
+                foreach ($this->criteria[$column] as $criterion) {
+                    if (!$criterion($value, $row)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     public function getResult(): array
     {
         $this->validateColumns();
@@ -86,13 +110,15 @@ class ArrayQuery
         foreach ($this->columns as $table => $columns) {
             $table = $this->db->get($table);
             foreach ($table as $i => $row) {
-                foreach ($columns as $column) {
-                    $result[$i][$column] = $row[$column] ?? null;
+                if ($this->rowMeetsCriteria($row)) {
+                    foreach ($columns as $column) {
+                        $result[$i][$column] = $row[$column] ?? null;
+                    }
                 }
             }
 
         }
-        return $result;
+        return array_values($result);
     }
 
 }

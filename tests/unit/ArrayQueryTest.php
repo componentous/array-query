@@ -101,4 +101,19 @@ class ArrayQueryTest extends TestCase
         ];
         $this->assertSame($expected, $result);
     }
+
+    public function testSomething()
+    {
+        $this->query->getDb()->add('table', $this->exampleArray);
+        $result = $this->query->select('column1')
+            ->from('table')
+            ->where('column2', fn($val) => $val != 'val2B')
+            ->getResult();
+        $this->assertTrue(true);
+        $expected = [
+            ['column1' => 'val1A'],
+            ['column1' => 'val1C']
+        ];
+        $this->assertSame($expected, $result);
+    }
 }
