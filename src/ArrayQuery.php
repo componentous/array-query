@@ -15,6 +15,7 @@ class ArrayQuery
     protected array $tables = [];
     protected array $columns = [];
     protected array $criteria = [];
+    protected string $groupBy;
 
     public function getTable(): string
     {
@@ -76,6 +77,15 @@ class ArrayQuery
         return $this;
     }
 
+    public function groupBy(string $column)
+    {
+        if (!$this->db->hasColumn($column)) {
+            throw new InvalidArgumentException("Column '$column' does not exist");
+        }
+        $this->groupBy = $column;
+        return $this;
+    }
+
     public function validateColumns(): void
     {
         foreach ($this->columns as $table => $columns) {
@@ -103,6 +113,20 @@ class ArrayQuery
         return true;
     }
 
+    public function groupData(array $data): array
+    {
+        if (!isset($this->groupBy)) {
+            return $data;
+        }
+        $grouped = [];
+        foreach ($data as $row) {
+            $key = $row[$this->groupBy] ?? 0;
+            unset($row[$this->groupBy]);
+            $grouped[$key][] = $row;
+        }
+        return $grouped;
+    }
+
     public function getResult(): array
     {
         $this->validateColumns();
@@ -113,10 +137,16 @@ class ArrayQuery
                 if ($this->rowMeetsCriteria($row)) {
                     foreach ($columns as $column) {
                         $result[$i][$column] = $row[$column] ?? null;
+                        if (isset($this->groupBy)) {
+                            $result[$i][$this->groupBy] = $row[$this->groupBy] ?? null;
+                        }
                     }
                 }
             }
 
+        }
+        if (isset($this->groupBy)) {
+            return $this->groupData($result);
         }
         return array_values($result);
     }
