@@ -30,7 +30,7 @@ class ArrayQueryTest extends TestCase
 
     public function testSelect()
     {
-        $this->query->getDb()->add('anArray', $this->exampleArray1);
+        $this->query->getDb()->addTable('anArray', $this->exampleArray1);
         $selfForChaining = $this->query->select('column1', 'column2');
         $this->assertSame($this->query, $selfForChaining);
         $this->assertSame(['anArray' =>['column1', 'column2']], $this->query->getColumns());
@@ -45,14 +45,14 @@ class ArrayQueryTest extends TestCase
     public function testSelectThrowsExceptionForAmbiguousColumn()
     {
         $this->expectException('InvalidArgumentException');
-        $this->query->getDb()->add('oneTable', [['column' => 'value']]);
-        $this->query->getDb()->add('anotherTable', [['column' => 'value']]);
+        $this->query->getDb()->addTable('oneTable', [['column' => 'value']]);
+        $this->query->getDb()->addTable('anotherTable', [['column' => 'value']]);
         $this->query->select('column');
     }
 
     public function testFrom()
     {
-        $this->query->getDb()->add('anArray', $this->exampleArray1);
+        $this->query->getDb()->addTable('anArray', $this->exampleArray1);
         $selfForChaining = $this->query->from('anArray');
         $this->assertSame($this->query, $selfForChaining);
         $this->assertSame(['anArray' => true], $this->query->getTables());
@@ -68,14 +68,14 @@ class ArrayQueryTest extends TestCase
     public function testGetResultThrowsAnExceptionIfColumnTablesAreNotInFromClause()
     {
         $this->expectException('RuntimeException');
-        $this->query->getDb()->add('aTable', $this->exampleArray1);
+        $this->query->getDb()->addTable('aTable', $this->exampleArray1);
         $this->query->select('column1');
         $this->query->getResult();
     }
 
     public function testGetResultCanSelectAColumn()
     {
-        $this->query->getDb()->add('table', $this->exampleArray1);
+        $this->query->getDb()->addTable('table', $this->exampleArray1);
         $result = $this->query->select('column1')->from('table')->getResult();
         $expected = [
             ['column1' => 'val1A'],
@@ -87,7 +87,7 @@ class ArrayQueryTest extends TestCase
 
     public function testGetResultFillsNullsForMissingKeys()
     {
-        $this->query->getDb()->add('table', $this->exampleArray1);
+        $this->query->getDb()->addTable('table', $this->exampleArray1);
         $result = $this->query->select('column3')->from('table')->getResult();
         $expected = [
             ['column3' => 'val3A'],
@@ -99,7 +99,7 @@ class ArrayQueryTest extends TestCase
 
     public function testGetResultSelectsMultipleColumnsInSpecifiedOrder()
     {
-        $this->query->getDb()->add('table', $this->exampleArray1);
+        $this->query->getDb()->addTable('table', $this->exampleArray1);
         $result = $this->query->select('column3', 'column1', 'column4')->from('table')->getResult();
         $expected = [
             ['column3' => 'val3A', 'column1' => 'val1A', 'column4' => null],
@@ -111,7 +111,7 @@ class ArrayQueryTest extends TestCase
 
     public function testWhere()
     {
-        $this->query->getDb()->add('table', $this->exampleArray1);
+        $this->query->getDb()->addTable('table', $this->exampleArray1);
         $result = $this->query->select('column1')
             ->from('table')
             ->where('column2', fn($val) => $val != 'val2B')
@@ -125,7 +125,7 @@ class ArrayQueryTest extends TestCase
 
     public function testGroupBy()
     {
-        $this->query->getDb()->add('table', $this->exampleArray2);
+        $this->query->getDb()->addTable('table', $this->exampleArray2);
         $result = $this->query->select('id')
             ->from('table')
             ->groupBy('name')

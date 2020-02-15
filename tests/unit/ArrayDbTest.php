@@ -17,42 +17,42 @@ class ArrayDbTest extends TestCase
 
     public function testAdd()
     {
-        $result = $this->db->add('something', []);
+        $result = $this->db->addTable('something', []);
         $this->assertSame(true, $result);
     }
 
     public function testAddReturnsFalseWhenTryingToAddAnExistingName()
     {
-        $this->db->add('something', []);
-        $result = $this->db->add('something', ['trying to add the same name']);
+        $this->db->addTable('something', []);
+        $result = $this->db->addTable('something', ['trying to add the same name']);
         $this->assertSame(false, $result);
     }
 
     public function testGet()
     {
-        $this->db->add('something', ['array we added']);
-        $result = $this->db->get('something');
+        $this->db->addTable('something', ['array we added']);
+        $result = $this->db->getTable('something');
         $this->assertSame(['array we added'], $result);
     }
 
     public function testGetReturnsNullIfNameDoesNotExist()
     {
-        $result = $this->db->get('nonexistent');
+        $result = $this->db->getTable('nonexistent');
         $this->assertNull($result);
     }
 
     public function testRemove()
     {
-        $this->db->add('something', []);
-        $result = $this->db->remove('something');
+        $this->db->addTable('something', []);
+        $result = $this->db->dropTable('something');
         $this->assertSame(true, $result);
-        $isItGone = $this->db->get('something');
+        $isItGone = $this->db->getTable('something');
         $this->assertNull($isItGone);
     }
 
     public function testRemoveReturnsFalseIfNameDoesNotExist()
     {
-        $result = $this->db->remove('nonexistent');
+        $result = $this->db->dropTable('nonexistent');
         $this->assertSame(false, $result);
     }
 
@@ -60,7 +60,7 @@ class ArrayDbTest extends TestCase
     {
         $tryBeforeItExists = $this->db->hasTable('nonexistent');
         $this->assertSame(false, $tryBeforeItExists);
-        $this->db->add('aTable', ['a value']);
+        $this->db->addTable('aTable', ['a value']);
         $tryAfterItExists = $this->db->hasTable('aTable');
         $this->assertSame(true, $tryAfterItExists);
     }
@@ -69,10 +69,10 @@ class ArrayDbTest extends TestCase
     {
         $tryWithoutTable = $this->db->tableHasColumn('nonexistentTable', 'nonexistentColumn');
         $this->assertSame(false, $tryWithoutTable);
-        $this->db->add('noColumns', []);
+        $this->db->addTable('noColumns', []);
         $tryWithoutColumn = $this->db->tableHasColumn('noColumns', 'nonexistentColumn');
         $this->assertSame(false, $tryWithoutColumn);
-        $this->db->add('withColumn', [['column' => 'value']]);
+        $this->db->addTable('withColumn', [['column' => 'value']]);
         $tryWithColumn = $this->db->tableHasColumn('withColumn', 'column');
         $this->assertSame(true, $tryWithColumn);
     }
@@ -80,13 +80,13 @@ class ArrayDbTest extends TestCase
     {
         $tryWithoutTable = $this->db->hasColumn('nonexistentColumn');
         $this->assertSame([], $tryWithoutTable);
-        $this->db->add('noColumns', []);
+        $this->db->addTable('noColumns', []);
         $tryWithoutColumn = $this->db->hasColumn('nonexistentColumn');
         $this->assertSame([], $tryWithoutColumn);
-        $this->db->add('withColumn', [['column' => 'value']]);
+        $this->db->addTable('withColumn', [['column' => 'value']]);
         $tryWithColumn = $this->db->hasColumn('column');
         $this->assertSame(['withColumn'], $tryWithColumn);
-        $this->db->add('hasSameColumn', [['column' => 'value']]);
+        $this->db->addTable('hasSameColumn', [['column' => 'value']]);
         $tryWithMultipleInstances = $this->db->hasColumn('column');
         $this->assertSame(['withColumn', 'hasSameColumn'], $tryWithMultipleInstances);
     }

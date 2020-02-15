@@ -92,7 +92,7 @@ class ArrayQuery
         $this->validateColumns();
         $result = [];
         foreach ($this->columns as $table => $columns) {
-            $table = $this->db->get($table);
+            $table = $this->db->getTable($table);
             foreach ($table as $i => $row) {
                 if ($this->rowMeetsCriteria($row)) {
                     foreach ($columns as $column) {

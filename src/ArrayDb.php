@@ -8,7 +8,7 @@ class ArrayDb
 {
     protected array $arrays = [];
 
-    public function add(string $name, array $array): bool
+    public function addTable(string $name, array $array): bool
     {
         if (isset($this->arrays[$name])) {
             return false;
@@ -39,12 +39,12 @@ class ArrayDb
         return isset($this->arrays[$table][0][$column]);
     }
 
-    public function get(string $name): ?array
+    public function getTable(string $name): ?array
     {
         return $this->arrays[$name] ?? null;
     }
 
-    public function remove(string $name): bool
+    public function dropTable(string $name): bool
     {
         if (isset($this->arrays[$name])) {
             unset($this->arrays[$name]);
