@@ -86,46 +86,6 @@ class ArrayQuery
         return $this;
     }
 
-    public function validateColumns(): void
-    {
-        foreach ($this->columns as $table => $columns) {
-            if (!isset($this->tables[$table])) {
-                $columnNames = implode(', ', $columns);
-                $errors[] = "Column(s) $columnNames are in table $table that was not included in the from clause";
-            }
-        }
-        if (isset($errors)) {
-            throw new RuntimeException('Invalid columns: ' . implode('; ', $errors));
-        }
-    }
-
-    public function rowMeetsCriteria(array $row): bool
-    {
-        foreach ($row as $column => $value) {
-            if (isset($this->criteria[$column])) {
-                foreach ($this->criteria[$column] as $criterion) {
-                    if (!$criterion($value, $row)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    public function groupData(array $data): array
-    {
-        if (!isset($this->groupBy)) {
-            return $data;
-        }
-        $grouped = [];
-        foreach ($data as $row) {
-            $key = $row[$this->groupBy] ?? 0;
-            unset($row[$this->groupBy]);
-            $grouped[$key][] = $row;
-        }
-        return $grouped;
-    }
 
     public function getResult(): array
     {
@@ -151,4 +111,44 @@ class ArrayQuery
         return array_values($result);
     }
 
+    protected function validateColumns(): void
+    {
+        foreach ($this->columns as $table => $columns) {
+            if (!isset($this->tables[$table])) {
+                $columnNames = implode(', ', $columns);
+                $errors[] = "Column(s) $columnNames are in table $table that was not included in the from clause";
+            }
+        }
+        if (isset($errors)) {
+            throw new RuntimeException('Invalid columns: ' . implode('; ', $errors));
+        }
+    }
+
+    protected function rowMeetsCriteria(array $row): bool
+    {
+        foreach ($row as $column => $value) {
+            if (isset($this->criteria[$column])) {
+                foreach ($this->criteria[$column] as $criterion) {
+                    if (!$criterion($value, $row)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    protected function groupData(array $data): array
+    {
+        if (!isset($this->groupBy)) {
+            return $data;
+        }
+        $grouped = [];
+        foreach ($data as $row) {
+            $key = $row[$this->groupBy] ?? 0;
+            unset($row[$this->groupBy]);
+            $grouped[$key][] = $row;
+        }
+        return $grouped;
+    }
 }
