@@ -3,6 +3,7 @@
 namespace unit;
 
 use Componentous\ArrayQuery\Database;
+use Componentous\ArrayQuery\Table;
 use PHPUnit\Framework\TestCase;
 
 class ArrayDbTest extends TestCase
@@ -39,9 +40,9 @@ class ArrayDbTest extends TestCase
      */
     public function testGetTable()
     {
-        $this->db->addTable('something', ['array we added']);
+        $this->db->addTable('something', [['column' => 'value']]);
         $result = $this->db->getTable('something');
-        $this->assertSame(['array we added'], $result);
+        $this->assertInstanceOf(Table::class, $result);
     }
 
     /**
@@ -81,7 +82,7 @@ class ArrayDbTest extends TestCase
     {
         $tryBeforeItExists = $this->db->hasTable('nonexistent');
         $this->assertSame(false, $tryBeforeItExists);
-        $this->db->addTable('aTable', ['a value']);
+        $this->db->addTable('aTable', [['column' => 'value']]);
         $tryAfterItExists = $this->db->hasTable('aTable');
         $this->assertSame(true, $tryAfterItExists);
     }

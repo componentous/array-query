@@ -6,28 +6,29 @@ namespace Componentous\ArrayQuery;
 
 class Database implements DatabaseInterface
 {
-    protected array $arrays = [];
+    /** @var Table[] */
+    protected array $tables = [];
 
-    public function addTable(string $name, array $array): bool
+    public function addTable(string $name, array $data): bool
     {
-        if (isset($this->arrays[$name])) {
+        if (isset($this->tables[$name])) {
             return false;
         } else {
-            $this->arrays[$name] = $array;
+            $this->tables[$name] = new Table($name, $data);
             return true;
         }
     }
 
     public function hasTable(string $name): bool
     {
-        return isset($this->arrays[$name]);
+        return isset($this->tables[$name]);
     }
 
     public function hasColumn(string $column): array
     {
         $tables = [];
-        foreach ($this->arrays as $tableName => $table) {
-            if (array_column($table, $column)) {
+        foreach ($this->tables as $tableName => $table) {
+            if ($table->hasColumn($column)) {
                 $tables[] = $tableName;
             }
         }
@@ -36,18 +37,18 @@ class Database implements DatabaseInterface
 
     public function tableHasColumn(string $table, string $column): bool
     {
-        return isset($this->arrays[$table][0][$column]);
+        return isset($this->tables[$table]) && $this->tables[$table]->hasColumn($column);
     }
 
-    public function getTable(string $name): ?array
+    public function getTable(string $name): ?TableInterface
     {
-        return $this->arrays[$name] ?? null;
+        return $this->tables[$name] ?? null;
     }
 
     public function dropTable(string $name): bool
     {
-        if (isset($this->arrays[$name])) {
-            unset($this->arrays[$name]);
+        if (isset($this->tables[$name])) {
+            unset($this->tables[$name]);
             return true;
         } else {
             return false;

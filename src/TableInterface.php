@@ -89,10 +89,10 @@ interface TableInterface
     /**
      * @param string $name
      * @param string[] $types
+     * @param int $rowCount
      * @return ColumnInterface
-     * @throws Exception
      */
-    public function defineColumnFromTypes(string $name, array $types): ColumnInterface;
+    public function defineColumnFromTypes(string $name, array $types, int $rowCount): ColumnInterface;
 
     /**
      * @param mixed[] $data

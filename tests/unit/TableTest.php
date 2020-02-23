@@ -191,7 +191,7 @@ class TableTest extends TestCase
      */
     public function testDefineColumnFromTypesDefaultsToStringTypeForEmptyType()
     {
-        $column = $this->table->defineColumnFromTypes('test', ['NULL' => 1]);
+        $column = $this->table->defineColumnFromTypes('test', ['NULL' => 1], 1);
         $expected = new Column('test', 'string', false);
         $this->assertEquals($expected, $column);
     }
@@ -203,7 +203,7 @@ class TableTest extends TestCase
     public function testDefineColumnsFromTypesThrowsExceptionForAmbiguousTypes()
     {
         $this->expectException('Exception');
-        $this->table->defineColumnFromTypes('test', ['string' => 1, 'integer' => 1]);
+        $this->table->defineColumnFromTypes('test', ['string' => 1, 'integer' => 1], 2);
     }
 
     /**

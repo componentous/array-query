@@ -117,7 +117,6 @@ class Table implements TableInterface
         unset($this->columns[$name]);
         $column = [$name => 1];
         $this->data = array_map(fn($row) => array_diff_key($row, $column), $this->data);
-        var_dump($this->data);
         return $this;
     }
 
@@ -125,15 +124,16 @@ class Table implements TableInterface
     {
         $columnTypes = $this->findColumnTypes($data);
         $columns = [];
+        $rowCount = count($data);
         foreach ($columnTypes as $name => $types) {
-            $columns[$name] = $this->defineColumnFromTypes($name, $types);
+            $columns[$name] = $this->defineColumnFromTypes($name, $types, $rowCount);
         }
         return $columns;
     }
 
-    public function defineColumnFromTypes(string $name, array $types): ColumnInterface
+    public function defineColumnFromTypes(string $name, array $types, int $rowCount): ColumnInterface
     {
-        $notNull = !isset($types['NULL']);
+        $notNull = !isset($types['NULL']) && array_sum($types) == $rowCount;
         unset($types['NULL']);
         if (!$types) {
             $types = ['string' => 1];

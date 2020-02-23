@@ -5,7 +5,10 @@ use Componentous\ArrayQuery\Query;
 use Componentous\ArrayQuery\Database;
 use PHPUnit\Framework\TestCase;
 
-
+/**
+ * Class QueryTest
+ * @covers \Componentous\ArrayQuery\Query::__construct()
+ */
 class QueryTest extends TestCase
 {
     protected Query $query;
@@ -27,6 +30,47 @@ class QueryTest extends TestCase
         parent::setUp();
         $this->query = new Query(new Database());
     }
+
+    /**
+     * @covers \Componentous\ArrayQuery\Query::getDb()
+     */
+    public function testGetDb()
+    {
+        $db = $this->query->getDb();
+        $this->assertInstanceOf(Database::class, $db);
+    }
+
+    /**
+     * @covers \Componentous\ArrayQuery\Query::getTable()
+     */
+    public function testGetTable()
+    {
+        $this->query->getDb()->addTable('test', []);
+        $this->query->from('test');
+        $this->assertEquals('test', $this->query->getTable());
+    }
+
+    /**
+     * @covers \Componentous\ArrayQuery\Query::getTables()
+     */
+    public function testGetTables()
+    {
+        $this->query->getDb()->addTable('test', []);
+        $this->query->from('test');
+        $this->assertEquals(['test' => true], $this->query->getTables());
+    }
+
+    /**
+     * @covers \Componentous\ArrayQuery\Query::getColumns()
+     */
+    public function testGetColumns()
+    {
+        $this->query->getDb()->addTable('test', [['a' => 'value']]);
+        $this->query->select('a')->from('test');
+        $this->assertEquals(['test' => ['a']], $this->query->getColumns());
+    }
+
+
 
     /**
      * @covers \Componentous\ArrayQuery\Query::select()
@@ -82,6 +126,7 @@ class QueryTest extends TestCase
 
     /**
      * @covers \Componentous\ArrayQuery\Query::getResult()
+     * @covers \Componentous\ArrayQuery\Query::validateColumns()
      */
     public function testGetResultThrowsAnExceptionIfColumnTablesAreNotInFromClause()
     {
@@ -93,6 +138,7 @@ class QueryTest extends TestCase
 
     /**
      * @covers \Componentous\ArrayQuery\Query::getResult()
+     * @covers \Componentous\ArrayQuery\Query::groupData()
      */
     public function testGetResultCanSelectAColumn()
     {
@@ -138,6 +184,7 @@ class QueryTest extends TestCase
 
     /**
      * @covers \Componentous\ArrayQuery\Query::where()
+     * @covers \Componentous\ArrayQuery\Query::rowMeetsCriteria()
      */
     public function testWhere()
     {
@@ -154,7 +201,18 @@ class QueryTest extends TestCase
     }
 
     /**
+     * @covers \Componentous\ArrayQuery\Query::where()
+     */
+    public function testWhereThrowsExceptionForNonexistentColumn()
+    {
+        $this->expectException('InvalidArgumentException');
+        $this->query->where('nonexistent', 'is_int');
+    }
+
+    /**
      * @covers \Componentous\ArrayQuery\Query::groupBy()
+     * @covers \Componentous\ArrayQuery\Query::getResult()
+     * @covers \Componentous\ArrayQuery\Query::groupData()
      */
     public function testGroupBy()
     {
@@ -168,5 +226,14 @@ class QueryTest extends TestCase
             'al' => [['id' => 2], ['id' => 4], ['id' => 5]]
         ];
         $this->assertSame($expected, $result);
+    }
+
+    /**
+     * @covers \Componentous\ArrayQuery\Query::groupBy()
+     */
+    public function testGroupByThrowsExceptionForNonexistentColumn()
+    {
+        $this->expectException('InvalidArgumentException');
+        $this->query->groupBy('nonexistent');
     }
 }

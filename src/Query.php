@@ -93,7 +93,7 @@ class Query implements QueryInterface
         $result = [];
         foreach ($this->columns as $table => $columns) {
             $table = $this->db->getTable($table);
-            foreach ($table as $i => $row) {
+            foreach ($table->getData() as $i => $row) {
                 if ($this->rowMeetsCriteria($row)) {
                     foreach ($columns as $column) {
                         $result[$i][$column] = $row[$column] ?? null;
@@ -140,7 +140,7 @@ class Query implements QueryInterface
 
     protected function groupData(array $data): array
     {
-        if (!isset($this->groupBy)) {
+        if (empty($this->groupBy)) {
             return $data;
         }
         $grouped = [];
