@@ -2,7 +2,7 @@
 
 namespace Componentous\ArrayQuery;
 
-interface ArrayQueryInterface
+interface QueryInterface
 {
     public function getTable(): string;
 
@@ -10,7 +10,7 @@ interface ArrayQueryInterface
 
     public function getColumns(): array;
 
-    public function getDb(): ArrayDbInterface;
+    public function getDb(): DatabaseInterface;
 
     public function select(string ...$columns): self;
 

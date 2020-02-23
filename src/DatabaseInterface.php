@@ -2,7 +2,7 @@
 
 namespace Componentous\ArrayQuery;
 
-interface ArrayDbInterface
+interface DatabaseInterface
 {
     public function addTable(string $name, array $array): bool;
 

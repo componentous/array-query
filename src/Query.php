@@ -7,9 +7,9 @@ namespace Componentous\ArrayQuery;
 use InvalidArgumentException;
 use RuntimeException;
 
-class ArrayQuery implements ArrayQueryInterface
+class Query implements QueryInterface
 {
-    protected ArrayDb $db;
+    protected Database $db;
 
     protected string $table;
     protected array $tables = [];
@@ -33,12 +33,12 @@ class ArrayQuery implements ArrayQueryInterface
     }
 
 
-    public function __construct(ArrayDb $db)
+    public function __construct(Database $db)
     {
         $this->db = $db;
     }
 
-    public function getDb(): ArrayDb
+    public function getDb(): Database
     {
         return $this->db;
     }

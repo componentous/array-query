@@ -1,14 +1,14 @@
 <?php
 
 
-use Componentous\ArrayQuery\ArrayQuery;
-use Componentous\ArrayQuery\ArrayDb;
+use Componentous\ArrayQuery\Query;
+use Componentous\ArrayQuery\Database;
 use PHPUnit\Framework\TestCase;
 
 
-class ArrayQueryTest extends TestCase
+class QueryTest extends TestCase
 {
-    protected ArrayQuery $query;
+    protected Query $query;
     protected array $exampleArray1 = [
         ['column1' => 'val1A', 'column2' => 'val2A', 'column3' => 'val3A'],
         ['column1' => 'val1B', 'column2' => 'val2B'],
@@ -25,7 +25,7 @@ class ArrayQueryTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->query = new ArrayQuery(new ArrayDb());
+        $this->query = new Query(new Database());
     }
 
     public function testSelect()

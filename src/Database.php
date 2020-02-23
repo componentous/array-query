@@ -4,7 +4,7 @@
 namespace Componentous\ArrayQuery;
 
 
-class ArrayDb implements ArrayDbInterface
+class Database implements DatabaseInterface
 {
     protected array $arrays = [];
 

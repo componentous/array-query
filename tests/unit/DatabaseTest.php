@@ -2,17 +2,17 @@
 
 namespace unit;
 
-use Componentous\ArrayQuery\ArrayDb;
+use Componentous\ArrayQuery\Database;
 use PHPUnit\Framework\TestCase;
 
 class ArrayDbTest extends TestCase
 {
-    protected ArrayDb $db;
+    protected Database $db;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->db = new ArrayDb();
+        $this->db = new Database();
     }
 
     public function testAdd()
