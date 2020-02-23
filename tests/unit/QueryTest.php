@@ -28,6 +28,9 @@ class QueryTest extends TestCase
         $this->query = new Query(new Database());
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Query::select()
+     */
     public function testSelect()
     {
         $this->query->getDb()->addTable('anArray', $this->exampleArray1);
@@ -36,12 +39,18 @@ class QueryTest extends TestCase
         $this->assertSame(['anArray' =>['column1', 'column2']], $this->query->getColumns());
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Query::select()
+     */
     public function testSelectThrowsExceptionForNonexistentColumn()
     {
         $this->expectException('InvalidArgumentException');
         $this->query->select('nonexistent');
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Query::select()
+     */
     public function testSelectThrowsExceptionForAmbiguousColumn()
     {
         $this->expectException('InvalidArgumentException');
@@ -50,6 +59,9 @@ class QueryTest extends TestCase
         $this->query->select('column');
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Query::from()
+     */
     public function testFrom()
     {
         $this->query->getDb()->addTable('anArray', $this->exampleArray1);
@@ -59,12 +71,18 @@ class QueryTest extends TestCase
         $this->assertSame('anArray', $this->query->getTable());
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Query::from()
+     */
     public function testFromThrowsExceptionForNonexistentTable()
     {
         $this->expectException('InvalidArgumentException');
         $this->query->from('nonexistentTable');
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Query::getResult()
+     */
     public function testGetResultThrowsAnExceptionIfColumnTablesAreNotInFromClause()
     {
         $this->expectException('RuntimeException');
@@ -73,6 +91,9 @@ class QueryTest extends TestCase
         $this->query->getResult();
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Query::getResult()
+     */
     public function testGetResultCanSelectAColumn()
     {
         $this->query->getDb()->addTable('table', $this->exampleArray1);
@@ -85,6 +106,9 @@ class QueryTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Query::getResult()
+     */
     public function testGetResultFillsNullsForMissingKeys()
     {
         $this->query->getDb()->addTable('table', $this->exampleArray1);
@@ -97,6 +121,9 @@ class QueryTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Query::getResult()
+     */
     public function testGetResultSelectsMultipleColumnsInSpecifiedOrder()
     {
         $this->query->getDb()->addTable('table', $this->exampleArray1);
@@ -109,6 +136,9 @@ class QueryTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Query::where()
+     */
     public function testWhere()
     {
         $this->query->getDb()->addTable('table', $this->exampleArray1);
@@ -123,6 +153,9 @@ class QueryTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Query::groupBy()
+     */
     public function testGroupBy()
     {
         $this->query->getDb()->addTable('table', $this->exampleArray2);

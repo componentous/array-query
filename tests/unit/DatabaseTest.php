@@ -15,33 +15,48 @@ class ArrayDbTest extends TestCase
         $this->db = new Database();
     }
 
-    public function testAdd()
+    /**
+     * @covers \Componentous\ArrayQuery\Database::addTable()
+     */
+    public function testAddTable()
     {
         $result = $this->db->addTable('something', []);
         $this->assertSame(true, $result);
     }
 
-    public function testAddReturnsFalseWhenTryingToAddAnExistingName()
+    /**
+     * @covers \Componentous\ArrayQuery\Database::addTable()
+     */
+    public function testAddTableReturnsFalseWhenTryingToAddAnExistingName()
     {
         $this->db->addTable('something', []);
         $result = $this->db->addTable('something', ['trying to add the same name']);
         $this->assertSame(false, $result);
     }
 
-    public function testGet()
+    /**
+     * @covers \Componentous\ArrayQuery\Database::getTable()
+     */
+    public function testGetTable()
     {
         $this->db->addTable('something', ['array we added']);
         $result = $this->db->getTable('something');
         $this->assertSame(['array we added'], $result);
     }
 
-    public function testGetReturnsNullIfNameDoesNotExist()
+    /**
+     * @covers \Componentous\ArrayQuery\Database::getTable()
+     */
+    public function testGetTableReturnsNullIfNameDoesNotExist()
     {
         $result = $this->db->getTable('nonexistent');
         $this->assertNull($result);
     }
 
-    public function testRemove()
+    /**
+     * @covers \Componentous\ArrayQuery\Database::dropTable()
+     */
+    public function testDropTable()
     {
         $this->db->addTable('something', []);
         $result = $this->db->dropTable('something');
@@ -50,12 +65,18 @@ class ArrayDbTest extends TestCase
         $this->assertNull($isItGone);
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Database::dropTable()
+     */
     public function testRemoveReturnsFalseIfNameDoesNotExist()
     {
         $result = $this->db->dropTable('nonexistent');
         $this->assertSame(false, $result);
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Database::hasTable()
+     */
     public function testHasTable()
     {
         $tryBeforeItExists = $this->db->hasTable('nonexistent');
@@ -65,6 +86,9 @@ class ArrayDbTest extends TestCase
         $this->assertSame(true, $tryAfterItExists);
     }
 
+    /**
+     * @covers \Componentous\ArrayQuery\Database::tableHasColumn()
+     */
     public function testTableHasColumn()
     {
         $tryWithoutTable = $this->db->tableHasColumn('nonexistentTable', 'nonexistentColumn');
@@ -76,6 +100,10 @@ class ArrayDbTest extends TestCase
         $tryWithColumn = $this->db->tableHasColumn('withColumn', 'column');
         $this->assertSame(true, $tryWithColumn);
     }
+
+    /**
+     * @covers \Componentous\ArrayQuery\Database::hasColumn()
+     */
     public function testHasColumn()
     {
         $tryWithoutTable = $this->db->hasColumn('nonexistentColumn');
